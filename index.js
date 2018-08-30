@@ -1,82 +1,79 @@
 function main(params) {
 
 	let intent = params.request.intent.name;
-	let result;
-	let attribute = {"name":"", "value":""};
-	let recommendation;
-	let recipe;
+	let result = "NaN";
 	const recommendedTypeList = ['한번 맛보면 참을 수 없는', '남녀노소 즐길 수 있는', '기가 막히고 혀가 놀라는'];
 	const tutorialList = ['이전 요리 단계를 알고 싶으면', '현재 요리 단계를 알고 싶으면', '다음 요리 단계를 알고 싶으면'];
 	
-	let currentStep = 0;
+	let attributes = {
+		"formerIntent": intent,
+		"recommendation": 0,
+		"recipe": "NaN",
+		"step": 0
+	}
+	try {
+		let formerAttributes = params.session.sessionAttributes;
+		
+		attributes.recommendation = formerAttributes.recommendation;
+		attributes.recipe = formerAttributes.recipe;
+		attributes.step = formerAttributes.step;
+	} catch (e) {
+		console.log(e);
+	}
 	
 	if(intent == 'Clova.GuideIntent') {
 		//첫 인사
-		recommendedType = getRecommendation(3);
-		result = "안녕하세요. 모두의 요리사 요리왕입니다.\n\r만들고 싶은 음식을 말씀해 주세요.\n\r잘 모르시겠다면 요리왕이 " + recommendedTypeList[recommendedType] + " 요리를 추천해 드릴께요."
-		attribute.name = "recommendation";
-		attribute.value = recommendedType;
+		attributes.recommendation = getRecommendation(3);
+		result = "안녕하세요. 모두의 요리사 요리왕입니다.\n\r만들고 싶은 음식을 말씀해 주세요.\n\r잘 모르시겠다면 요리왕이 " + recommendedTypeList[attributes.recommendation] + " 요리를 추천해 드릴께요."
 	} else if(intent == 'AskRecipe') {
 		//레시피 질문
-		let food = params.request.intent.slots.food.value;
-		result = food + "를 만들어 볼까요?";
-		attribute.name = "recipe";
-		attribute.value = food;
+		attributes.recipe = params.request.intent.slots.food.value;
+		result = attributes.recipe + "를 만들어 볼까요?";
 	} else if(intent == 'AskRecipeRecommendation') {
-		recommendation = params.session.sessionAttributes.recommendation;
-		recipe = "미역국";	//추후 음식 추천으로 개발
-		result = recommendedTypeList[recommendation] + " " + recipe + "를 만들어 볼까요?";
+		attributes.recommendation = params.session.sessionAttributes.recommendation;
+		attributes.recipe = "미역국";	//추후 음식 추천으로 개발
+		result = recommendedTypeList[attributes.recommendation] + " " + attributes.recipe + "를 만들어 볼까요?";
 	} else if(intent == 'Clova.YesIntent') {
-		recipe = params.session.sessionAttributes.recipe;
 		tutorial = getRecommendation(3);
-		result = "요리왕이 " + recipe + " 레시피에 대해 다 알려줄테니까 걱정마세요. 먼저 원활한 요리 진행을 위해 저랑 약속 하나만 하고 갈까요?\r\n잘 들어주세요. 요리 도중 요리 이전 단계를 알고 싶으면 이전, 현재 단계를 알고 싶으면 ‘다시’, 다음 단계를 알고 싶은 ‘다음＇이라고 말해주세요."
-		attribute.name = "step";
-		attribute.value = 0;
+		result = "요리왕이 " + attributes.recipe + " 레시피에 대해 다 알려줄테니까 걱정마세요. 먼저 원활한 요리 진행을 위해 저랑 약속 하나만 하고 갈까요?\r\n잘 들어주세요. 요리 도중 요리 이전 단계를 알고 싶으면 이전, 현재 단계를 알고 싶으면 ‘다시’, 다음 단계를 알고 싶은 ‘다음＇이라고 말해주세요."
+		attributes.step = 0;
 	} else if(intent == 'Clova.NoIntent') {
-		recommendedType = getRecommendation(3);
-		result = "음.. 그럼 다른 요리를 해볼까요?\n\r만들고 싶은 음식을 말씀해 주세요.\n\r잘 모르시겠다면 요리왕이 " + recommendedTypeList[recommendedType] + " 요리를 추천해 드릴께요."
-		attribute.name = "recommendation";
-		attribute.value = recommendedType;
+		attributes.recommendation = getRecommendation(3);
+		result = "음.. 그럼 다른 요리를 해볼까요?\n\r만들고 싶은 음식을 말씀해 주세요.\n\r잘 모르시겠다면 요리왕이 " + recommendedTypeList[attributes.recommendation] + " 요리를 추천해 드릴께요."
 	} else if(intent == 'NextStep') {
-		recipe = params.session.sessionAttributes.recipe;
-		currentStep = params.session.sessionAttributes.step;
-		if(currentStep < 5) {
-			currentStep = currentStep + 1;
+		attributes.recipe = params.session.sessionAttributes.recipe;
+		if(attributes.step < 5) {
+			attributes.step = attributes.step + 1;
 		}
-		result = getRecipeStep(recipe, currentStep);
-		attribute.name = "step";
-		attribute.value = currentStep;
+		result = getRecipeStep(attributes.recipe, attributes.step);
 	} else if(intent == 'PreviousStep') {
-		recipe = params.session.sessionAttributes.recipe;
-		currentStep = params.session.sessionAttributes.step;
-		if(currentStep > 1) {
-			currentStep = currentStep - 1;
+		attributes.recipe = params.session.sessionAttributes.recipe;
+		if(attributes.step > 1) {
+			attributes.step = attributes.step - 1;
 		}
-		result = getRecipeStep(recipe, currentStep);
-		attribute.name = "step";
-		attribute.value = currentStep;
+		result = getRecipeStep(attributes.recipe, attributes.step);
 	} else if(intent == 'RepeatStep') {
-		recipe = params.session.sessionAttributes.recipe;
-		currentStep = params.session.sessionAttributes.step;
-		result = getRecipeStep(recipe, currentStep);
-		attribute.name = "step";
-		attribute.value = currentStep;
+		attributes.recipe = params.session.sessionAttributes.recipe;
+		result = getRecipeStep(attributes.recipe, attributes.step);
 	} else {
 		//첫 인사
-		recommendedType = getRecommendation(3);
-		result = "안녕하세요. 모두의 요리사 요리왕입니다.\n\r만들고 싶은 음식을 말씀해 주세요.\n\r잘 모르시겠다면 요리왕이 " + recommendedTypeList[recommendedType] + " 요리를 추천해 드릴께요."
-		attribute.name = "recommendation";
-		attribute.value = recommendedType;
+		attributes.recommendation = getRecommendation(3);
+		result = "안녕하세요. 모두의 요리사 요리왕입니다.\n\r만들고 싶은 음식을 말씀해 주세요.\n\r잘 모르시겠다면 요리왕이 " + recommendedTypeList[attributes.recommendation] + " 요리를 추천해 드릴께요."
 	}
+	
+	console.log(intent);
+	console.log("선택된 요리: " + attributes.recipe);
+	console.log(attributes.step);
 
-
-	let response = convertJSON(result, attribute);
-	response.sessionAttributes["formerIntent"] = intent;
+	let response = convertJSON(result);
+	response.sessionAttributes = attributes;
+	
   return response;
 }
 
 function getRecipeStep(recipe, step) {
 	//추후 데이터베이스에서 데이터를 받는 것으로 수정
+	console.log("현재 요리: " + recipe + "? " + (recipe == "미역국") + ", " +step);
 	let content = "";
 	switch(step) {
 		case 1:
@@ -125,7 +122,7 @@ function getRecommendation(range) {
 	return Math.floor(Math.random() * range);
 }
 
-function convertJSON(text, attribute) {
+function convertJSON(text) {
 	let result = {
 		"version": "0.1.0",
 		"sessionAttributes": {},
@@ -143,10 +140,6 @@ function convertJSON(text, attribute) {
 			"shouldEndSession": false
 		}
 	};
-
-	if(attribute.name != "") {
-		result.sessionAttributes[attribute.name] = attribute.value;
-	}
 
 	return result;
 }
