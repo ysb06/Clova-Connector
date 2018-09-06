@@ -65,7 +65,7 @@ function main(params) {
 	console.log("선택된 요리: " + attributes.recipe);
 	console.log(attributes.step);
 
-	let response = convertJSON(result);
+	let response = convertJSONSpeech(result);
 	response.sessionAttributes = attributes;
 	
   return response;
@@ -134,6 +134,35 @@ function convertJSON(text) {
 					"lang": "ko",
 					"value": text
 				}
+			},
+			"card": {},
+			"directives": [],
+			"shouldEndSession": false
+		}
+	};
+
+	return result;
+}
+
+function convertJSONSpeech(text) {
+	let result = {
+		"version": "0.1.0",
+		"sessionAttributes": {},
+		"response": {
+			"outputSpeech": {
+				"type": "SimpleSpeech",
+				"values": [
+					{
+						"type": "PlainText",
+						"lang": "ko",
+						"value": text
+					}, 
+					{
+						"type": "URL",
+						"lang": "ko" ,
+						"value": "https://www.sample-videos.com/audio/mp3/wave.mp3"
+					}
+				]
 			},
 			"card": {},
 			"directives": [],

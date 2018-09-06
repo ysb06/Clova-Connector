@@ -1,0 +1,43 @@
+{
+    "version": "0.1.0",
+    "session": {
+        "sessionId": "cb5cb5a9-a99c-44c7-b1ee-a5dde4147b64",
+        "user": {
+            "userId": "M8ejBcdERl-JfE6Qv0JYUg",
+            "accessToken": "e5dfa010-cbfe-4ec2-b2dd-2bd42c735cd0"
+        },
+        "new": true
+    },
+    "context": {
+        "System": {
+            "user": {
+                "userId": "M8ejBcdERl-JfE6Qv0JYUg",
+                "accessToken": "e5dfa010-cbfe-4ec2-b2dd-2bd42c735cd0"
+            },
+            "device": {
+                "deviceId": "6ff3ddc0-0054-48f2-a871-1b79730ddfbe",
+                "display": {
+                    "size": "l100",
+                    "orientation": "landscape",
+                    "dpi": 96,
+                    "contentLayer": {
+                        "width": 640,
+                        "height": 360
+                    }
+                }
+            }
+        }
+    },
+    "request": {
+        "type": "IntentRequest",
+        "intent": {
+            "name": "AskRecipe",
+            "slots": {
+                "food": {
+                    "name": "food",
+                    "value": "김치찌개"
+                }
+            }
+        }
+    }
+}

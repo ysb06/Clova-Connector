@@ -1,0 +1,22 @@
+{
+    "response": {
+        "card": {},
+        "directives": [],
+        "outputSpeech": {
+            "type": "SimpleSpeech",
+            "values": {
+                "lang": "ko",
+                "type": "PlainText",
+                "value": "김치찌개를 만들어 볼까요?"
+            }
+        },
+        "shouldEndSession": false
+    },
+    "sessionAttributes": {
+        "formerIntent": "AskRecipe",
+        "recipe": "김치찌개",
+        "recommendation": 0,
+        "step": 0
+    },
+    "version": "0.1.0"
+}
