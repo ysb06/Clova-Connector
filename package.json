@@ -1,0 +1,8 @@
+{
+    "name": "Clova-Connector"
+  , "version": "0.1.0"
+  , "private": true
+  , "dependencies": {
+        "cheerio-httpcli": "0.7.3"
+  }
+}
